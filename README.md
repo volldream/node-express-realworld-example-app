@@ -54,6 +54,9 @@ Requests are authenticated using the `Authorization` header with a valid JWT. We
 
 # Challenge structure
 
+#### All Kubernetes files are in kube folder
+I changed app.js file for adding access log and persist this file with PersistentVolumeClaim
+
 #### Add Global Host and Repository information 
 First of all set some variable on conduit file 
 

@@ -53,7 +53,7 @@ Requests are authenticated using the `Authorization` header with a valid JWT. We
 
 
 # Challenge structure
-s
+
 #### Add Global Host and Repository information 
 First of all set some variable on conduit file 
 

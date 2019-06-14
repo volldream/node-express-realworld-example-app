@@ -50,3 +50,36 @@ Requests are authenticated using the `Authorization` header with a valid JWT. We
 <br />
 
 [![Brought to you by Thinkster](https://raw.githubusercontent.com/gothinkster/realworld/master/media/end.png)](https://thinkster.io)
+
+
+# Challenge structure
+s
+#### Add Global Host and Repository information 
+First of all set some variable on conduit file 
+
+Your repository address and name
+`REPO="YOUR_REPO"`
+
+Your repository username
+`USERNAME="USERNAME"`
+
+Your repository password
+`PASSWORD="PASSWORD"`
+
+MongoDB Host
+`MONGOHOST="HOST"`
+
+Add Persistent Volume Host (if useing minikube add node name)
+`PersistentVolumeHost="HOST"`
+
+#### init application for first time
+
+For first Time run, execute command 
+
+`./conduit init`
+
+#### redeploy new image 
+
+Run `./conduit redeploy {version_number}` to deploy new image on kubernetes cluster
+
+

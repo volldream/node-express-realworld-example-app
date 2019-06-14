@@ -7,12 +7,20 @@ var http = require('http'),
     cors = require('cors'),
     passport = require('passport'),
     errorhandler = require('errorhandler'),
-    mongoose = require('mongoose');
+    mongoose = require('mongoose'),
+    fs = require('fs'),
+    morgan = require('morgan');
 
 var isProduction = process.env.NODE_ENV === 'production';
 
 // Create global app object
 var app = express();
+
+// create a write stream (in append mode)
+var accessLogStream = fs.createWriteStream('/logs/access.log', {flags: 'a'});
+
+// setup the logger
+app.use(morgan('combined', {stream: accessLogStream}));
 
 app.use(cors());
 

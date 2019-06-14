@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+      kubernetes.io/ingress.class: nginx
+  namespace: conduit
+  name: conduit-ingress
+spec:
+  rules:
+  - host: conduit.test
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: conduit
+          servicePort: 3000

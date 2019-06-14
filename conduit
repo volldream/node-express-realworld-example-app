@@ -1,0 +1,53 @@
+#!/bin/bash
+
+function usage {
+    cat <<EOF
+Usage:
+  $0 [command]
+
+Available commands:
+  init                      Setup environment
+  redeploy                  Build and deploy with image tag
+
+EOF
+    exit 1
+}
+
+
+REPO="YOURREPO"
+USERNAME="USERNAME"
+PASSWORD="PASSWORD"
+MONGOHOST="HOST"
+PersistentVolumeHost="HOST"
+
+case $1 in
+    "init")
+        docker build -t $REPO/conduit:0.0.1 .
+        docker login --usernam=$USERNAME --password=$PASSWORD
+        docker push $REPO/conduit:latest
+        sed -i "s/image:.*/image: $REPO\/conduit:0.0.1/g" kube/deployment.yml
+        sed -i "s/conduit:[0-9][0-9.]*$/conduit:0.0.1/g" kube/deployment.yml
+        sed -i "s/- ip: \"[0-9][0-9.]*\"$/- ip: \"$MONGOHOST\"/g" kube/deployment.yml
+        sed -i "s/kube-host/$PersistentVolumeHost/g" kube/PV.yml
+        kubectl apply -f kube/namespace.yml
+        kubectl apply -f kube/secrets.yml
+        kubectl apply -f kube/PV.yml
+        kubectl apply -f kube/deployment.yml
+        kubectl apply -f kube/service.yml
+        kubectl apply -f kube/HPA.yml
+        kubectl apply -f kube/ingress.yml
+
+    ;;
+    "redeploy")
+        if [[ -n $2 && $2 != '' ]]
+        then            
+            docker build -t $REPO/conduit:$2 .
+            docker login --usernam=$USERNAME --password=$PASSWORD
+            docker push $REPO/conduit:$2
+            sed -i "s/image:.*/image: $REPO\/conduit:$2/g" kube/deployment.yml
+            kubectl apply -f kube/deployment.yml
+        else
+            echo "Please enter valid version like 0.0.1"
+        fi
+    ;;
+esac

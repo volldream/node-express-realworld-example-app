@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: conduit
+  namespace: conduit
+  labels:
+    app: conduit
+spec:
+  replicas: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: conduit
+  template:
+    metadata:
+      labels:
+        app: conduit
+    spec:
+      hostAliases:
+      - ip: "172.17.0.1"
+        hostnames:
+        - "db"
+      containers:
+      - name: conduit
+        image: conduit:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+        readinessProbe:
+          httpGet:
+            path: /api/articles
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          successThreshold: 1
+        env:
+        - name: NODE_ENV
+          value: production
+        - name: MONGODB_URI
+          value: mongodb://db/conduit
+        - name: SECRET
+          valueFrom:
+            secretKeyRef:
+              name: conduit-secret
+              key: secret

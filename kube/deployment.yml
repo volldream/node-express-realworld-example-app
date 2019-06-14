@@ -37,6 +37,9 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 5
           successThreshold: 1
+        volumeMounts:
+          - name: conduit-log-mount
+            mountPath: /logs/
         env:
         - name: NODE_ENV
           value: production
@@ -47,3 +50,7 @@ spec:
             secretKeyRef:
               name: conduit-secret
               key: secret
+      volumes:
+        - name: conduit-log-mount
+          persistentVolumeClaim:
+            claimName: conduit-pvc
